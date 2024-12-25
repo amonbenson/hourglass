@@ -14,8 +14,10 @@ export default {
       fgDark: colors.gray[100],
       primary: colors.teal[500],
       primaryDark: colors.teal[700],
+      primaryFg: colors.gray[50],
       secondary: colors.rose[500],
       secondaryDark: colors.rose[700],
+      secondaryFg: colors.gray[50],
     },
     extend: {
       opacity: {

@@ -2,7 +2,7 @@
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
 
 const running = ref(false);
-const counterStart = ref(3);
+const counterStart = ref(30);
 const counter = ref(counterStart.value);
 const isReset = computed(() => !running.value && counter.value === counterStart.value);
 
@@ -67,9 +67,10 @@ onMounted(() => {
   <div class="fixed left-0 top-0 w-screen h-screen">
     <!-- Sand layer -->
     <div
-      class="absolute left-0 bottom-0 w-full bg-primary opacity-50 transition-height duration-200"
+      class="absolute left-0 bottom-0 w-full bg-primary opacity-75 transition-height duration-200"
       :style="{
-        height: !isReset ? `${counter / counterStart * 100}%`: '0%'
+        /* height: !isReset ? `${counter / counterStart * 100}%`: '0%' */
+        height: `${counter / counterStart * 100}%`
       }"
     />
 
@@ -85,13 +86,13 @@ onMounted(() => {
       <!-- Control buttons -->
       <div class="flex items-center space-x-8">
         <button
-          class="round-button"
+          class="text-2xl"
           @click="running ? pause() : start()"
         >
           P
         </button>
         <button
-          class="round-button"
+          class="text-2xl"
           :disabled="isReset"
           @click="stop()"
         >
