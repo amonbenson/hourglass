@@ -15,8 +15,8 @@ export default {
       dark: colors.gray[900],
       darker: colors.gray[950],
       light: colors.gray[50],
-      primary: colors.teal[500],
-      secondary: colors.amber[500],
+      primary: colors.teal[600],
+      secondary: colors.amber[600],
       accent: colors.rose[500],
     },
     extend: {

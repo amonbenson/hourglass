@@ -2,14 +2,27 @@
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
-import { PlayIcon, PauseIcon, StopIcon, ChevronLeftIcon, ChevronRightIcon, Cog6ToothIcon } from "@heroicons/vue/24/outline";
+import {
+  PlayIcon,
+  PauseIcon,
+  StopIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Cog6ToothIcon,
+  XMarkIcon,
+  PlusIcon,
+  TrashIcon,
+  ArrowDownIcon,
+} from "@heroicons/vue/24/outline";
+import { FwbCheckbox, FwbInput } from "flowbite-vue";
 import RoundIconButton from "@/components/RoundIconButton.vue";
 
 const { colors } = resolveConfig(tailwindConfig).theme;
 
 // global settings
-const players = ref(["Player 1", "Player 2", "Player 3"]);
-const counterStart = ref(120);
+const players = ref(["Player 1"]);
+const counterStart = ref(60);
+const continuous = ref(true);
 
 const running = ref(false);
 const counter = ref(counterStart.value);
@@ -17,6 +30,9 @@ const isReset = computed(() => !running.value && counter.value === counterStart.
 
 const prevEnabled = ref(false);
 const prevCounter = ref(0);
+
+const settingsOpen = ref(false);
+watch(settingsOpen, () => stop()); // stop the timer when settings are opened
 
 const currentPlayerIndex = ref(0);
 const currentPlayer = computed(() => players.value[currentPlayerIndex.value]);
@@ -98,7 +114,8 @@ function next() {
   // switch to the next player
   currentPlayerIndex.value = (currentPlayerIndex.value + 1) % players.value.length;
 
-  if (wasRunning) {
+  // start the timer again if it was running before
+  if (continuous.value && wasRunning) {
     start(false);
   }
 }
@@ -125,6 +142,25 @@ function prev() {
   prevEnabled.value = false;
 }
 
+function addPlayer() {
+  players.value.push(`Player ${players.value.length + 1}`);
+}
+
+function removePlayer(index) {
+  if (players.value.length <= 1) {
+    return;
+  }
+
+  stop();
+
+  players.value.splice(index, 1);
+
+  // make sure that the current player index is still valid
+  if (currentPlayerIndex.value >= players.value.length) {
+    currentPlayerIndex.value = players.value.length - 1;
+  }
+}
+
 onMounted(() => {
   start(false);
 });
@@ -138,35 +174,33 @@ onMounted(() => {
       :style="{
         height: `${counter / counterStart * 100}%`,
         background: currentPlayerColor,
-        // background: `conic-gradient(transparent ${100 - counter / counterStart * 100}%, ${currentPlayerColor} ${100 - counter / counterStart * 100 + 0.0001}%)`,
       }"
     />
 
     <!-- Next / prev touch areas -->
     <div class="absolute left-0 top-0 w-full h-full flex">
       <div
-        class="shrink-0 flex justify-start items-center w-1/4 h-full min-w-24 p-4 group"
-        :class="{
-          'cursor-pointer': prevEnabled,
-          'opacity-0': !prevEnabled,
-        }"
+        v-if="players.length > 1 && prevEnabled"
+        class="shrink-0 flex justify-start items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
         @click="prev()"
       >
         <RoundIconButton
           class="opacity-0 group-hover:opacity-100 transition-opacity"
-          :disabled="!prevEnabled"
           @click.stop="prev()"
         >
           <ChevronLeftIcon class="size-8" />
         </RoundIconButton>
       </div>
+
       <div
         class="grow h-full cursor-pointer"
-        @click="next()"
+        @click="running ? next() : start()"
       />
+
       <div
+        v-if="players.length > 1"
         class="shrink-0 flex justify-end items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
-        @click="next()"
+        @click="running ? next() : start()"
       >
         <RoundIconButton
           class="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -181,6 +215,7 @@ onMounted(() => {
     <div class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center space-y-8 pointer-events-none">
       <!-- Player name -->
       <div
+        v-if="players.length > 1"
         class="text-4xl text-bold font-thin"
       >
         {{ currentPlayer }}
@@ -220,22 +255,84 @@ onMounted(() => {
 
     <!-- Settings Button -->
     <RoundIconButton
-      class="fixed right-4 top-4"
-      @click.stop="stop()"
+      class="fixed right-4 top-4 z-50"
+      @click.stop="settingsOpen = !settingsOpen"
     >
-      <Cog6ToothIcon class="size-8" />
+      <Cog6ToothIcon
+        v-if="!settingsOpen"
+        class="size-8"
+      />
+      <XMarkIcon
+        v-else
+        class="size-8"
+      />
     </RoundIconButton>
 
     <!-- Settings Dialog -->
     <div
-      v-if="false"
-      class="fixed left-0 top-0 w-screen h-screen flex justify-center items-center bg-dark/75"
+      v-if="settingsOpen"
+      class="fixed left-0 top-0 w-screen h-screen flex justify-center items-center bg-dark/75 cursor-pointer"
+      @click.stop="settingsOpen = false"
     >
       <div class="container mx-auto p-4 md:p-24">
-        <div class="p-8 space-y-4 bg-dark rounded-lg shadow-xl shadow-dark/25">
-          Settings
+        <div
+          class="p-8 space-y-4 bg-dark rounded-lg shadow-xl shadow-dark/25 cursor-default"
+          @click.stop="() => {}"
+        >
+          <h2>Timer</h2>
+          <FwbInput
+            v-model="counterStart"
+            label="Duration (in seconds)"
+            type="number"
+            min="1"
+            max="3600"
+          />
+          <FwbCheckbox
+            v-model="continuous"
+            color="light"
+            label="Continue running after the timer reaches 0"
+          />
+
+          <h2>Players</h2>
+          <div class="flex flex-col space-y-4 items-center">
+            <div 
+              v-for="(_, index) in players"
+              :key="index"
+              class="w-full flex space-x-2 justify-center items-center"
+            >
+              <FwbInput
+                v-model="players[index]"
+                class="grow"
+              />
+              <RoundIconButton
+                v-if="players.length > 1"
+                class="bg-accent/0 hover:bg-accent/25 focus:ring-accent"
+                small
+                @click="removePlayer(index)"
+              >
+                <TrashIcon
+                  class="size-6 text-accent"
+                />
+              </RoundIconButton>
+            </div>
+
+            <RoundIconButton
+              small
+              @click="addPlayer()"
+            >
+              <PlusIcon class="size-8" />
+            </RoundIconButton>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Skip countdown button (for debugging) -->
+    <RoundIconButton
+      class="fixed right-4 bottom-4 z-50"
+      @click.stop="counter = 2"
+    >
+      <ArrowDownIcon class="size-8" />
+    </RoundIconButton>
   </div>
 </template>
