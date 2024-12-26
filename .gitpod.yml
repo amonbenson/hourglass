@@ -3,3 +3,4 @@ vscode:
   extensions:
     - "vue.volar"
     - "dbaeumer.vscode-eslint"
+    - "bradlc.vscode-tailwindcss"
