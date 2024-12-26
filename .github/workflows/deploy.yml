@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: "16" # Use the Node.js version your project needs
+          node-version: "22"
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
 
       - name: Build project
-        run: npm run build
+        run: yarn build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: actions/deploy-pages@v4.0.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          artifact_name: ./dist
