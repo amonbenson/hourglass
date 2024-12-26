@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref, watch, onMounted, onUnmounted } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
+import { storeToRefs } from "pinia";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
 import {
@@ -15,14 +16,13 @@ import {
   ArrowDownIcon,
 } from "@heroicons/vue/24/outline";
 import { FwbCheckbox, FwbInput } from "flowbite-vue";
+import { useSettingsStore } from "@/store/settings";
 import RoundIconButton from "@/components/RoundIconButton.vue";
 
 const { colors } = resolveConfig(tailwindConfig).theme;
 
-// global settings
-const players = ref(["Player 1"]);
-const counterStart = ref(60);
-const continuous = ref(true);
+const store = useSettingsStore();
+const { counterStart, continuous, players } = storeToRefs(store);
 
 const running = ref(false);
 const counter = ref(counterStart.value);
