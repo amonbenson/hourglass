@@ -5,9 +5,9 @@ export const useSettingsStore = defineStore("settings", {
   state: () => useStorage(
     "settings",
     {
-      counterStart: 60,
-      continuous: true,
-      players: ["Player 1"],
+      timerDuration: 60,
+      continueAfterTimerEnds: true,
+      playerNames: ["Player 1"],
     },
     localStorage,
     {
@@ -17,7 +17,12 @@ export const useSettingsStore = defineStore("settings", {
   actions: {
     updateSettings(settings) {
       Object.assign(this, settings);
-      localStorage.setItem("settings", JSON.stringify(this.settings));
+    },
+    addPlayer() {
+      this.playerNames.push(`Player ${this.playerNames.length + 1}`);
+    },
+    removePlayer(index) {
+      this.playerNames.splice(index, 1);
     },
   },
 });
