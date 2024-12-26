@@ -1,0 +1,5 @@
+image: gitpod/workspace-node
+vscode:
+  extensions:
+    - "vue.volar"
+    - "dbaeumer.vscode-eslint"
