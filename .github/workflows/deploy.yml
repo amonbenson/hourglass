@@ -23,8 +23,8 @@ jobs:
       - name: Build project
         run: yarn build
 
+      - name: Upload Github Pages Artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4.0.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: ./dist
