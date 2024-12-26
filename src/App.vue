@@ -1,8 +1,10 @@
 <script setup>
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
+import { PlayIcon, PauseIcon, StopIcon } from "@heroicons/vue/24/outline";
+import RoundIconButton from "@/components/RoundIconButton.vue";
 
 const running = ref(false);
-const counterStart = ref(30);
+const counterStart = ref(10);
 const counter = ref(counterStart.value);
 const isReset = computed(() => !running.value && counter.value === counterStart.value);
 
@@ -25,15 +27,6 @@ const spacerString = computed(() => {
 });
 
 let interval = null;
-watch(running, (value) => {
-  if (value) {
-    // setup tick interval and run immediately
-    interval = setInterval(tick, 1000);
-    tick();
-  } else {
-    clearInterval(interval);
-  }
-}, { immediate: true });
 
 function tick() {
   if (counter.value > 0) {
@@ -41,25 +34,46 @@ function tick() {
     counter.value--;
   } else {
     // start the next round
-    counter.value = counterStart.value;
+    nextRound();
   }
 }
 
-function start() {
-  running.value = true;
+function start(immediate = true) {
+  if (!running.value) {
+    running.value = true;
+
+    // register tick interval
+    interval = setInterval(tick, 1000);
+
+    // run the first tick immediately
+    if (immediate) {
+      tick();
+    }
+  }
 }
 
 function pause() {
-  running.value = false;
+  if (running.value) {
+    running.value = false;
+
+    // deregister tick interval
+    clearInterval(interval);
+  }
 }
 
 function stop() {
-  running.value = false;
+  pause();
   counter.value = counterStart.value;
 }
 
+function nextRound() {
+  stop();
+  // TODO: next round logic
+  start(false);
+}
+
 onMounted(() => {
-  start();
+  start(false);
 });
 </script>
 
@@ -74,7 +88,10 @@ onMounted(() => {
       }"
     />
 
-    <div class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center space-y-8">
+    <div
+      class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center space-y-8 cursor-pointer"
+      @click="nextRound()"
+    >
       <!-- Timer value -->
       <div class="text-8xl text-bold font-thin">
         <div class="invisible overflow-hidden h-0">
@@ -85,19 +102,24 @@ onMounted(() => {
 
       <!-- Control buttons -->
       <div class="flex items-center space-x-8">
-        <button
-          class="text-2xl"
-          @click="running ? pause() : start()"
+        <RoundIconButton
+          @click.stop="running ? pause() : start()"
         >
-          P
-        </button>
-        <button
-          class="text-2xl"
+          <PlayIcon
+            v-if="!running"
+            class="size-8 ml-1"
+          />
+          <PauseIcon
+            v-else
+            class="size-8"
+          />
+        </RoundIconButton>
+        <RoundIconButton
           :disabled="isReset"
-          @click="stop()"
+          @click.stop="stop()"
         >
-          S
-        </button>
+          <StopIcon class="size-8" />
+        </RoundIconButton>
       </div>
     </div>
   </div>
