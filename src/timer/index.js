@@ -28,6 +28,10 @@ export default class Timer extends EventEmitter {
     return this._counter.value;
   }
 
+  set counter(value) {
+    this._counter.value = value;
+  }
+
   get running() {
     return this._running.value;
   }

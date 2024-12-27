@@ -4,13 +4,16 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/store/settings";
 import Timer from "@/timer";
 import useSound from "vue-use-sound";
-import SandLayer from "@/components/SandLayer.vue";
-import TouchAreas from "@/components/TouchAreas.vue";
+import { Cog6ToothIcon, XMarkIcon, ArrowDownIcon } from "@heroicons/vue/24/outline";
+import UiCircleButton from "@/components/ui/UiCircleButton.vue";
+import ProgressBackdrop from "@/components/ProgressBackdrop.vue";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay.vue";
 import TimerDisplay from "@/components/TimerDisplay.vue";
 import ControlButtons from "@/components/ControlButtons.vue";
 import SettingsDialog from "@/components/SettingsDialog.vue";
 import alarmSound from "@/assets/sounds/alarm01.mp3";
+
+const DEVELOPMENT = process.env.NODE_ENV === "development";
 
 const settings = useSettingsStore();
 const { timerDuration, playerNames } = storeToRefs(settings);
@@ -20,9 +23,6 @@ const timer = new Timer(settings);
 
 const currentPlayer = computed(() => playerNames.value[timer.currentPlayerIndex]);
 
-const prevEnabled = ref(false);
-const prevCounter = ref(0);
-
 const settingsOpen = ref(false);
 watch(settingsOpen, () => timer.stop());
 
@@ -31,47 +31,6 @@ const [playAlarm] = useSound(alarmSound);
 timer.on("timeout", () => {
   playAlarm();
 });
-
-/*
-function next() {
-  // store the previous counter value to be able to revert
-  prevCounter.value = counter.value;
-  prevEnabled.value = true;
-
-  const wasRunning = running.value;
-  stop();
-
-  // switch to the next player
-  currentPlayerIndex.value = (currentPlayerIndex.value + 1) % playerNames.value.length;
-
-  // start the timer again if it was running before
-  if (continueAfterTimerEnds.value && wasRunning) {
-    start(false);
-  }
-}
-
-function prev() {
-  if (!prevEnabled.value) {
-    return;
-  }
-
-  const timeElapsed = timerDuration.value - counter.value;
-  const wasRunning = running.value;
-  stop();
-
-  // switch to the previous player
-  currentPlayerIndex.value = (currentPlayerIndex.value + playerNames.value.length - 1) % playerNames.value.length;
-
-  if (wasRunning) {
-    // restore the previous counter value but subtract the time that has passed since then
-    counter.value = Math.max(0, prevCounter.value - timeElapsed);
-    start(false);
-  }
-
-  prevCounter.value = 0;
-  prevEnabled.value = false;
-}
-*/
 
 function onKeydown(event) {
   // blur the focused element when the escape key is pressed
@@ -92,12 +51,6 @@ function onKeydown(event) {
   } else if (event.key === "Enter") {
     event.preventDefault();
     timer.next();
-  } else if (event.key === "ArrowLeft") {
-    event.preventDefault();
-    timer.prev();
-  } else if (event.key === "ArrowRight") {
-    event.preventDefault();
-    timer.next();
   }
 }
 
@@ -114,20 +67,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="dark fixed left-0 top-0 w-screen h-screen">
-    <SandLayer
-      :amount="timer.counter / timerDuration"
+  <div
+    class="dark fixed left-0 top-0 w-screen h-screen cursor-pointer"
+    @click="timer.running ? timer.next() : timer.start()"
+  >
+    <ProgressBackdrop
+      class="w-full h-full pointer-events-none"
+      :progress="timer.counter / timerDuration"
       :color="['primary', 'secondary', 'accent'][timer.currentPlayerIndex % 3]"
-    />
-
-    <TouchAreas
-      v-model:settings-open="settingsOpen"
-      :left-enabled="multiplayer && prevEnabled"
-      :right-enabled="multiplayer"
-      @left="timer.prev()"
-      @center="timer.running ? timer.next() : timer.start()"
-      @right="timer.running ? timer.next() : timer.start()"
-      @skip-countdown="timer.counter = 2"
     />
 
     <div class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center space-y-8 pointer-events-none">
@@ -148,5 +95,27 @@ onBeforeUnmount(() => {
     </div>
 
     <SettingsDialog v-model:open="settingsOpen" />
+
+    <UiCircleButton
+      class="fixed right-4 top-4 z-50"
+      @click.stop="settingsOpen = !settingsOpen"
+    >
+      <Cog6ToothIcon
+        class="absolute size-8 transition-all duration-500"
+        :class="settingsOpen ? 'opacity-0 rotate-45' : 'opacity-100'"
+      />
+      <XMarkIcon
+        class="absolute size-8 transition-all duration-500"
+        :class="settingsOpen ? 'opacity-100' : 'opacity-0 -rotate-45'"
+      />
+    </UiCircleButton>
+
+    <UiCircleButton
+      v-if="DEVELOPMENT"
+      class="fixed right-4 bottom-4 z-50"
+      @click.stop="timer.counter = 2"
+    >
+      <ArrowDownIcon class="size-8" />
+    </UiCircleButton>
   </div>
 </template>
