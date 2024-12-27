@@ -1,7 +1,7 @@
 <script setup>
 import UiButton from "./UiButton.vue";
 
-const props = defineProps({
+defineProps({
   color: { type: String, default: "light" },
   disabled: Boolean,
   small: Boolean,
