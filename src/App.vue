@@ -192,14 +192,14 @@ onMounted(() => {
     <div class="absolute left-0 top-0 w-full h-full flex">
       <div
         v-if="multiplayer && prevEnabled"
-        class="shrink-0 flex justify-start items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
+        class="group/area shrink-0 flex justify-start items-center w-1/4 h-full min-w-24 p-4 cursor-pointer"
         @click="prev()"
       >
         <UiCircleButton
-          class="opacity-0 group-hover:opacity-100 transition-opacity"
+          class="group/button"
           @click.stop="prev()"
         >
-          <ChevronLeftIcon class="size-8" />
+          <ChevronLeftIcon class="size-8 opacity-0 group-hover/area:opacity-100 group-focus-visible/button:opacity-100 transition-opacity" />
         </UiCircleButton>
       </div>
 
@@ -210,14 +210,14 @@ onMounted(() => {
 
       <div
         v-if="multiplayer"
-        class="shrink-0 flex justify-end items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
+        class="group/area shrink-0 flex justify-end items-center w-1/4 h-full min-w-24 p-4 cursor-pointer"
         @click="running ? next() : start()"
       >
         <UiCircleButton
-          class="opacity-0 group-hover:opacity-100 transition-opacity"
+          class="group/button"
           @click.stop="next()"
         >
-          <ChevronRightIcon class="size-8" />
+          <ChevronRightIcon class="size-8 opacity-0 group-hover/area:opacity-100 group-focus-visible/button:opacity-100 transition-opacity" />
         </UiCircleButton>
       </div>
     </div>
@@ -270,12 +270,12 @@ onMounted(() => {
       @click.stop="settingsOpen = !settingsOpen"
     >
       <Cog6ToothIcon
-        v-if="!settingsOpen"
-        class="size-8"
+        class="absolute size-8 transition-all duration-500"
+        :class="settingsOpen ? 'opacity-0 rotate-45' : 'opacity-100'"
       />
       <XMarkIcon
-        v-else
-        class="size-8"
+        class="absolute size-8 transition-all duration-500"
+        :class="settingsOpen ? 'opacity-100' : 'opacity-0 -rotate-45'"
       />
     </UiCircleButton>
 

@@ -42,26 +42,14 @@
   h4 {
     @apply text-base font-bold;
   }
-
-  /* button {
-    @apply w-full bg-darker border-none focus:outline-none focus:ring-light focus:ring-4;
-  } */
-
-  /* input {
-    @apply w-full bg-darker border-none focus:outline-none focus:ring-light focus:ring-4;
-  }
-
-  input[type="checkbox"] ~ span.relative {
-    @apply bg-darker border-none peer-focus:outline-none peer-focus:ring-light peer-focus:ring-4;
-  } */
 }
 
-@layer components {
+@layer utilities {
   .focusring {
-    @apply focus:outline-none focus:ring-primary focus:ring-4;
+    @apply focus:outline-none focus-visible:ring-primary focus-visible:ring-4;
   }
 
   .peer-focusring {
-    @apply peer-focus:outline-none peer-focus:ring-primary peer-focus:ring-4;
+    @apply peer-focus:outline-none peer-focus-visible:ring-primary peer-focus-visible:ring-4;
   }
 }

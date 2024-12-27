@@ -36,7 +36,7 @@ function parseDigit(value, max = 9) {
   const sanitizedDigit = String(value).replace(/\D/g, "")[0];
   const number = parseInt(sanitizedDigit, 10);
   if (isNaN(number)) {
-    return options.min;
+    return 0;
   } else {
     return Math.max(0, Math.min(max, number));
   }
