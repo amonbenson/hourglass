@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { storeToRefs } from "pinia";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
@@ -169,11 +169,48 @@ function removePlayer(index) {
   }
 }
 
+function onKeydown(event) {
+  // blur the focused element when the escape key is pressed
+  if (event.key === "Escape") {
+    document.activeElement.blur();
+    return;
+  }
+
+  // ignore key events when an element is focused
+  if (document.activeElement !== document.body) {
+    return;
+  }
+
+  // handle keyboard shortcuts
+  if (event.key === " ") {
+    event.preventDefault();
+    running.value ? pause() : start();
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    next();
+  } else if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    prev();
+  } else if (event.key === "ArrowRight") {
+    event.preventDefault();
+    next();
+  }
+}
+
 onMounted(() => {
+  // register keyboard shortcuts
+  window.addEventListener("keydown", onKeydown);
+
   // start timer on page load
   if (continueAfterTimerEnds.value) {
     start(false);
   }
+});
+
+onBeforeUnmount(() => {
+  // deregister keyboard shortcuts
+  window.removeEventListener("keydown", onKeydown);
+  stop();
 });
 </script>
 
