@@ -4,7 +4,7 @@ import UiTextInput from "./UiTextInput.vue";
 
 const model = defineModel({ type: Number, required: true });
 
-const props = defineProps({
+defineProps({
   label: { type: String, default: "" },
   min: { type: Number, default: 0 },
   max: { type: Number, default: 3600 },
