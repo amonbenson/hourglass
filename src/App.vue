@@ -15,9 +15,14 @@ import {
   TrashIcon,
   ArrowDownIcon,
 } from "@heroicons/vue/24/outline";
-import { FwbCheckbox, FwbInput } from "flowbite-vue";
+import UiTimeInput from "@/components/ui/UiTimeInput.vue";
+import UiToggle from "@/components/ui/UiToggle.vue";
+import UiTextInput from "@/components/ui/UiTextInput.vue";
+import UiButton from "@/components/ui/UiButton.vue";
 import { useSettingsStore } from "@/store/settings";
 import RoundIconButton from "@/components/RoundIconButton.vue";
+
+const DEVELOPMENT = process.env.NODE_ENV === "development";
 
 const { colors } = resolveConfig(tailwindConfig).theme;
 
@@ -28,6 +33,9 @@ const multiplayer = computed(() => playerNames.value.length > 1);
 const running = ref(false);
 const counter = ref(timerDuration.value);
 const isReset = computed(() => !running.value && counter.value === timerDuration.value);
+
+// reset timer when duration changes
+watch(timerDuration, () => stop());
 
 const prevEnabled = ref(false);
 const prevCounter = ref(0);
@@ -163,12 +171,15 @@ function removePlayer(index) {
 }
 
 onMounted(() => {
-  start(false);
+  // start timer on page load
+  if (continueAfterTimerEnds.value) {
+    start(false);
+  }
 });
 </script>
 
 <template>
-  <div class="fixed left-0 top-0 w-screen h-screen">
+  <div class="dark fixed left-0 top-0 w-screen h-screen">
     <!-- Sand layer -->
     <div
       class="absolute left-0 bottom-0 w-full h-full opacity-75 transition-all duration-500"
@@ -272,26 +283,23 @@ onMounted(() => {
     <!-- Settings Dialog -->
     <div
       v-if="settingsOpen"
-      class="fixed left-0 top-0 w-screen h-screen flex justify-center items-center bg-dark/75 cursor-pointer"
+      class="fixed left-0 top-0 w-screen h-screen bg-dark/75 cursor-pointer overflow-y-scroll"
       @click.stop="settingsOpen = false"
     >
-      <div class="container mx-auto p-4 md:p-24">
+      <div class="container mx-auto sm:p-8">
         <div
-          class="p-8 space-y-4 bg-dark rounded-lg shadow-xl shadow-dark/25 cursor-default"
+          class="p-8 space-y-4 bg-dark sm:rounded-lg sm:shadow-xl sm:shadow-dark/25 cursor-default"
           @click.stop="() => {}"
         >
           <h2>Timer</h2>
-          <FwbInput
+          <UiTimeInput
             v-model="timerDuration"
-            label="Duration (in seconds)"
-            type="number"
-            min="1"
-            max="3600"
+            :min="1"
+            :max="3600"
           />
-          <FwbCheckbox
+          <UiToggle
             v-model="continueAfterTimerEnds"
-            color="light"
-            label="Continue running after the timer reaches 0"
+            label="Continue automatically after the timer reaches 0"
           />
 
           <h2>Players</h2>
@@ -301,7 +309,7 @@ onMounted(() => {
               :key="index"
               class="w-full flex space-x-2 justify-center items-center"
             >
-              <FwbInput
+              <UiTextInput
                 v-model="playerNames[index]"
                 class="grow"
               />
@@ -324,12 +332,21 @@ onMounted(() => {
               <PlusIcon class="size-8" />
             </RoundIconButton>
           </div>
+
+          <UiButton
+            class="w-auto"
+            plain
+            @click="settingsOpen = false"
+          >
+            Close
+          </UiButton>
         </div>
       </div>
     </div>
 
     <!-- Skip countdown button (for debugging) -->
     <RoundIconButton
+      v-if="DEVELOPMENT"
       class="fixed right-4 bottom-4 z-50"
       @click.stop="counter = 2"
     >

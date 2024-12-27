@@ -1,5 +1,10 @@
 import colors from "tailwindcss/colors";
 
+const dark = colors.gray[900];
+const darker = colors.gray[950];
+const light = colors.gray[50];
+const muted = colors.gray[400];
+
 /** @type {import("tailwindcss").Config} */
 export default {
   content: [
@@ -8,15 +13,17 @@ export default {
     "node_modules/flowbite/**/*.{js,jsx,ts,tsx}",
     "node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx,vue}",
   ],
+  darkMode: "class",
   theme: {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      dark: colors.gray[900],
-      darker: colors.gray[950],
-      light: colors.gray[50],
-      primary: colors.teal[600],
-      secondary: colors.amber[600],
+      dark,
+      darker,
+      light,
+      muted,
+      primary: colors.teal[500],
+      secondary: colors.amber[500],
       accent: colors.rose[500],
     },
     extend: {
