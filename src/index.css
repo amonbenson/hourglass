@@ -6,6 +6,17 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-dark: 17 24 39;
+    --color-darker: 3 7 18;
+    --color-light: 249 250 251;
+    --color-muted: 156 163 175;
+
+    --color-primary: 20 184 166;
+    --color-secondary: 254 158 11;
+    --color-accent: 244 63 94;
+  }
+
   html, body, * {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;

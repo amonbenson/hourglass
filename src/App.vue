@@ -18,9 +18,8 @@ import {
 import UiTimeInput from "@/components/ui/UiTimeInput.vue";
 import UiToggle from "@/components/ui/UiToggle.vue";
 import UiTextInput from "@/components/ui/UiTextInput.vue";
-import UiButton from "@/components/ui/UiButton.vue";
+import UiCircleButton from "@/components/ui/UiCircleButton.vue";
 import { useSettingsStore } from "@/store/settings";
-import RoundIconButton from "@/components/RoundIconButton.vue";
 
 const DEVELOPMENT = process.env.NODE_ENV === "development";
 
@@ -196,12 +195,12 @@ onMounted(() => {
         class="shrink-0 flex justify-start items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
         @click="prev()"
       >
-        <RoundIconButton
+        <UiCircleButton
           class="opacity-0 group-hover:opacity-100 transition-opacity"
           @click.stop="prev()"
         >
           <ChevronLeftIcon class="size-8" />
-        </RoundIconButton>
+        </UiCircleButton>
       </div>
 
       <div
@@ -214,12 +213,12 @@ onMounted(() => {
         class="shrink-0 flex justify-end items-center w-1/4 h-full min-w-24 p-4 cursor-pointer group"
         @click="running ? next() : start()"
       >
-        <RoundIconButton
+        <UiCircleButton
           class="opacity-0 group-hover:opacity-100 transition-opacity"
           @click.stop="next()"
         >
           <ChevronRightIcon class="size-8" />
-        </RoundIconButton>
+        </UiCircleButton>
       </div>
     </div>
 
@@ -242,7 +241,7 @@ onMounted(() => {
 
       <!-- Control buttons -->
       <div class="flex items-center space-x-8">
-        <RoundIconButton
+        <UiCircleButton
           class="pointer-events-auto"
           @click.stop="running ? pause() : start()"
         >
@@ -254,19 +253,19 @@ onMounted(() => {
             v-else
             class="size-8"
           />
-        </RoundIconButton>
-        <RoundIconButton
+        </UiCircleButton>
+        <UiCircleButton
           class="pointer-events-auto"
           :disabled="isReset"
           @click.stop="stop()"
         >
           <StopIcon class="size-8" />
-        </RoundIconButton>
+        </UiCircleButton>
       </div>
     </div>
 
     <!-- Settings Button -->
-    <RoundIconButton
+    <UiCircleButton
       class="fixed right-4 top-4 z-50"
       @click.stop="settingsOpen = !settingsOpen"
     >
@@ -278,7 +277,7 @@ onMounted(() => {
         v-else
         class="size-8"
       />
-    </RoundIconButton>
+    </UiCircleButton>
 
     <!-- Settings Dialog -->
     <div
@@ -313,44 +312,36 @@ onMounted(() => {
                 v-model="playerNames[index]"
                 class="grow"
               />
-              <RoundIconButton
+              <UiCircleButton
                 v-if="multiplayer"
-                class="bg-accent/0 hover:bg-accent/25 focus:ring-accent"
+                color="accent"
                 small
                 @click="removePlayer(index)"
               >
                 <TrashIcon
                   class="size-6 text-accent"
                 />
-              </RoundIconButton>
+              </UiCircleButton>
             </div>
 
-            <RoundIconButton
+            <UiCircleButton
               small
               @click="addPlayer()"
             >
               <PlusIcon class="size-8" />
-            </RoundIconButton>
+            </UiCircleButton>
           </div>
-
-          <UiButton
-            class="w-auto"
-            plain
-            @click="settingsOpen = false"
-          >
-            Close
-          </UiButton>
         </div>
       </div>
     </div>
 
     <!-- Skip countdown button (for debugging) -->
-    <RoundIconButton
+    <UiCircleButton
       v-if="DEVELOPMENT"
       class="fixed right-4 bottom-4 z-50"
       @click.stop="counter = 2"
     >
       <ArrowDownIcon class="size-8" />
-    </RoundIconButton>
+    </UiCircleButton>
   </div>
 </template>

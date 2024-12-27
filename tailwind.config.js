@@ -1,10 +1,3 @@
-import colors from "tailwindcss/colors";
-
-const dark = colors.gray[900];
-const darker = colors.gray[950];
-const light = colors.gray[50];
-const muted = colors.gray[400];
-
 /** @type {import("tailwindcss").Config} */
 export default {
   content: [
@@ -18,13 +11,13 @@ export default {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      dark,
-      darker,
-      light,
-      muted,
-      primary: colors.teal[500],
-      secondary: colors.amber[500],
-      accent: colors.rose[500],
+      dark: "rgb(var(--color-dark))",
+      darker: "rgb(var(--color-darker))",
+      light: "rgb(var(--color-light))",
+      muted: "rgb(var(--color-muted))",
+      primary: "rgb(var(--color-primary))",
+      secondary: "rgb(var(--color-secondary))",
+      accent: "rgb(var(--color-accent))",
     },
     extend: {
       opacity: {
