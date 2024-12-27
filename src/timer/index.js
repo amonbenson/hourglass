@@ -98,8 +98,4 @@ export default class Timer extends EventEmitter {
       this.start(false);
     }
   }
-
-  prev() {
-    console.warn("prev() is not implemented yet");
-  }
 }

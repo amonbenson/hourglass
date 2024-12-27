@@ -48,7 +48,7 @@ function onKeydown(event) {
   if (event.key === " ") {
     event.preventDefault();
     timer.running ? timer.pause() : timer.start();
-  } else if (event.key === "Enter") {
+  } else if (["Enter", "ArrowRight", "ArrowDown"].includes(event.key)) {
     event.preventDefault();
     timer.next();
   }
