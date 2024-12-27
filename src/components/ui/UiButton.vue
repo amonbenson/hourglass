@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 const props = defineProps({
-  color: { type: String, default: "accent" },
+  color: { type: String, default: "primary" },
   disabled: Boolean,
   plain: Boolean,
   pill: Boolean,
@@ -20,7 +20,7 @@ const fgColor = computed(() => props.color === "light" ? "darker" : "light");
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       plain
         ? 'bg-transparent text-[rgb(var(--color))] hover:enabled:bg-[rgb(var(--color))]/20'
-        : 'bg-[rgb(var(--color))] text-[rgb(var(--fg-color))] hover:enabled:bg-[rgb(var(--color))]/50',
+        : 'bg-[rgb(var(--color))]/75 text-[rgb(var(--fg-color))] hover:enabled:bg-[rgb(var(--color))]/50 shadow-md',
       pill ? 'rounded-full' : 'rounded-xl px-4 py-2',
     ]"
     :style="`--color: var(--color-${color}); --fg-color: var(--color-${fgColor})`"

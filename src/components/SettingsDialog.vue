@@ -4,6 +4,7 @@ import { useSettingsStore } from "@/store/settings";
 import UiTimeInput from "@/components/ui/UiTimeInput.vue";
 import UiToggle from "@/components/ui/UiToggle.vue";
 import UiTextInput from "@/components/ui/UiTextInput.vue";
+import UiButton from "@/components/ui/UiButton.vue";
 import UiCircleButton from "@/components/ui/UiCircleButton.vue";
 import { PlusIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
@@ -49,7 +50,7 @@ function removePlayer(index) {
         />
         <UiToggle
           v-model="continueAfterTimeout"
-          label="Continue automatically after the timer reaches 0"
+          label="Continue after the timer reaches 0"
         />
 
         <h2>Players</h2>
@@ -79,6 +80,15 @@ function removePlayer(index) {
           >
             <PlusIcon class="size-8" />
           </UiCircleButton>
+        </div>
+
+        <div>
+          <UiButton
+            class="mt-12 w-full"
+            @click="() => { open = false }"
+          >
+            Close
+          </UiButton>
         </div>
       </div>
     </div>
