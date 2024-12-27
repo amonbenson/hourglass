@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/store/settings";
+import Timer from "@/timer";
 import useSound from "vue-use-sound";
 import SandLayer from "@/components/SandLayer.vue";
 import TouchAreas from "@/components/TouchAreas.vue";
@@ -12,71 +13,26 @@ import SettingsDialog from "@/components/SettingsDialog.vue";
 import alarmSound from "@/assets/sounds/alarm01.mp3";
 
 const settings = useSettingsStore();
-const { timerDuration, continueAfterTimerEnds, playerNames } = storeToRefs(settings);
+const { timerDuration, playerNames } = storeToRefs(settings);
 const multiplayer = computed(() => playerNames.value.length > 1);
 
-const running = ref(false);
-const counter = ref(timerDuration.value);
+const timer = new Timer(settings);
 
-// reset timer when duration changes
-watch(timerDuration, () => stop());
+const currentPlayer = computed(() => playerNames.value[timer.currentPlayerIndex]);
 
 const prevEnabled = ref(false);
 const prevCounter = ref(0);
 
 const settingsOpen = ref(false);
-watch(settingsOpen, () => stop());
+watch(settingsOpen, () => timer.stop());
 
-const currentPlayerIndex = ref(0);
-const currentPlayer = computed(() => playerNames.value[currentPlayerIndex.value]);
-
+// play alarm sound on timeout
 const [playAlarm] = useSound(alarmSound);
+timer.on("timeout", () => {
+  playAlarm();
+});
 
-let interval = null;
-
-function tick() {
-  if (counter.value > 0) {
-    // decrement the counter
-    counter.value--;
-
-    // play alarm sound when the timer reaches 0
-    if (counter.value === 0) {
-      playAlarm();
-    }
-  } else {
-    // start the next round
-    next();
-  }
-}
-
-function start(immediate = true) {
-  if (!running.value) {
-    running.value = true;
-
-    // register tick interval
-    interval = setInterval(tick, 1000);
-
-    // run the first tick immediately
-    if (immediate) {
-      tick();
-    }
-  }
-}
-
-function pause() {
-  if (running.value) {
-    running.value = false;
-
-    // deregister tick interval
-    clearInterval(interval);
-  }
-}
-
-function stop() {
-  pause();
-  counter.value = timerDuration.value;
-}
-
+/*
 function next() {
   // store the previous counter value to be able to revert
   prevCounter.value = counter.value;
@@ -115,15 +71,7 @@ function prev() {
   prevCounter.value = 0;
   prevEnabled.value = false;
 }
-
-function playerRemoved() {
-  stop();
-
-  // make sure the current player index is still valid
-  if (currentPlayerIndex.value >= playerNames.value.length) {
-    currentPlayerIndex.value = playerNames.value.length - 1;
-  }
-}
+*/
 
 function onKeydown(event) {
   // blur the focused element when the escape key is pressed
@@ -140,16 +88,16 @@ function onKeydown(event) {
   // handle keyboard shortcuts
   if (event.key === " ") {
     event.preventDefault();
-    running.value ? pause() : start();
+    timer.running ? timer.pause() : timer.start();
   } else if (event.key === "Enter") {
     event.preventDefault();
-    next();
+    timer.next();
   } else if (event.key === "ArrowLeft") {
     event.preventDefault();
-    prev();
+    timer.prev();
   } else if (event.key === "ArrowRight") {
     event.preventDefault();
-    next();
+    timer.next();
   }
 }
 
@@ -161,25 +109,25 @@ onMounted(() => {
 onBeforeUnmount(() => {
   // deregister keyboard shortcuts
   window.removeEventListener("keydown", onKeydown);
-  stop();
+  timer.stop();
 });
 </script>
 
 <template>
   <div class="dark fixed left-0 top-0 w-screen h-screen">
     <SandLayer
-      :amount="counter / timerDuration"
-      :color="['primary', 'secondary', 'accent'][currentPlayerIndex % 3]"
+      :amount="timer.counter / timerDuration"
+      :color="['primary', 'secondary', 'accent'][timer.currentPlayerIndex % 3]"
     />
 
     <TouchAreas
       v-model:settings-open="settingsOpen"
       :left-enabled="multiplayer && prevEnabled"
       :right-enabled="multiplayer"
-      @left="prev()"
-      @center="running ? next() : start()"
-      @right="running ? next() : start()"
-      @skip-countdown="counter = 2"
+      @left="timer.prev()"
+      @center="timer.running ? timer.next() : timer.start()"
+      @right="timer.running ? timer.next() : timer.start()"
+      @skip-countdown="timer.counter = 2"
     />
 
     <div class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center space-y-8 pointer-events-none">
@@ -188,20 +136,17 @@ onBeforeUnmount(() => {
         :player-name="currentPlayer"
       />
       <TimerDisplay
-        :counter="counter"
+        :counter="timer.counter"
       />
       <ControlButtons
-        :running="running"
-        :stop-enabled="running || counter !== timerDuration"
-        @start="start()"
-        @pause="pause()"
-        @stop="stop()"
+        :running="timer.running"
+        :stop-enabled="timer.running || timer.counter !== timerDuration"
+        @start="timer.start()"
+        @pause="timer.pause()"
+        @stop="timer.stop()"
       />
     </div>
 
-    <SettingsDialog
-      v-model:open="settingsOpen"
-      @player-removed="playerRemoved()"
-    />
+    <SettingsDialog v-model:open="settingsOpen" />
   </div>
 </template>
