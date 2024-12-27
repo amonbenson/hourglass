@@ -204,11 +204,6 @@ function onKeydown(event) {
 onMounted(() => {
   // register keyboard shortcuts
   window.addEventListener("keydown", onKeydown);
-
-  // start timer on page load
-  if (continueAfterTimerEnds.value) {
-    start(false);
-  }
 });
 
 onBeforeUnmount(() => {
