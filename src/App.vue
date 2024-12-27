@@ -209,15 +209,40 @@ onMounted(() => {
       />
 
       <div
-        v-if="multiplayer"
         class="group/area shrink-0 flex justify-end items-center w-1/4 h-full min-w-24 p-4 cursor-pointer"
         @click="running ? next() : start()"
       >
+        <!-- Settings menu button (always on top) -->
         <UiCircleButton
+          class="fixed right-4 top-4 z-50"
+          @click.stop="settingsOpen = !settingsOpen"
+        >
+          <Cog6ToothIcon
+            class="absolute size-8 transition-all duration-500"
+            :class="settingsOpen ? 'opacity-0 rotate-45' : 'opacity-100'"
+          />
+          <XMarkIcon
+            class="absolute size-8 transition-all duration-500"
+            :class="settingsOpen ? 'opacity-100' : 'opacity-0 -rotate-45'"
+          />
+        </UiCircleButton>
+
+        <!-- Next button -->
+        <UiCircleButton
+          v-if="multiplayer"
           class="group/button"
           @click.stop="next()"
         >
           <ChevronRightIcon class="size-8 opacity-0 group-hover/area:opacity-100 group-focus-visible/button:opacity-100 transition-opacity" />
+        </UiCircleButton>
+
+        <!-- Skip countdown button (for debugging purposes) -->
+        <UiCircleButton
+          v-if="DEVELOPMENT"
+          class="fixed right-4 bottom-4 z-50"
+          @click.stop="counter = 2"
+        >
+          <ArrowDownIcon class="size-8" />
         </UiCircleButton>
       </div>
     </div>
@@ -264,21 +289,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Settings Button -->
-    <UiCircleButton
-      class="fixed right-4 top-4 z-50"
-      @click.stop="settingsOpen = !settingsOpen"
-    >
-      <Cog6ToothIcon
-        class="absolute size-8 transition-all duration-500"
-        :class="settingsOpen ? 'opacity-0 rotate-45' : 'opacity-100'"
-      />
-      <XMarkIcon
-        class="absolute size-8 transition-all duration-500"
-        :class="settingsOpen ? 'opacity-100' : 'opacity-0 -rotate-45'"
-      />
-    </UiCircleButton>
-
     <!-- Settings Dialog -->
     <div
       v-if="settingsOpen"
@@ -287,7 +297,7 @@ onMounted(() => {
     >
       <div class="container mx-auto sm:p-8">
         <div
-          class="p-8 space-y-4 bg-dark sm:rounded-lg sm:shadow-xl sm:shadow-dark/25 cursor-default"
+          class="flex flex-col space-y-4 justify-center items-stretch p-8 bg-dark min-h-screen sm:min-h-0 sm:rounded-lg sm:shadow-xl sm:shadow-dark/25 cursor-default"
           @click.stop="() => {}"
         >
           <h2>Timer</h2>
@@ -334,14 +344,5 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
-    <!-- Skip countdown button (for debugging) -->
-    <UiCircleButton
-      v-if="DEVELOPMENT"
-      class="fixed right-4 bottom-4 z-50"
-      @click.stop="counter = 2"
-    >
-      <ArrowDownIcon class="size-8" />
-    </UiCircleButton>
   </div>
 </template>
