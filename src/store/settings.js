@@ -6,7 +6,7 @@ export const useSettingsStore = defineStore("settings", {
     "settings",
     {
       timerDuration: 60,
-      continueAfterTimerEnds: true,
+      continueAfterTimeout: true,
       playerNames: ["Player 1"],
     },
     localStorage,

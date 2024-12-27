@@ -94,7 +94,7 @@ export default class Timer extends EventEmitter {
     this._currentPlayerIndex.value = (this._currentPlayerIndex.value + 1) % this._settings.playerNames.length;
 
     // start timer for the next player
-    if (this._settings.continueAfterTimerEnds && wasRunning) {
+    if (this._settings.continueAfterTimeout && wasRunning) {
       this.start(false);
     }
   }

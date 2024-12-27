@@ -11,7 +11,7 @@ const open = defineModel("open", { type: Boolean });
 const emit = defineEmits(["playerAdded", "playerRemoved"]);
 
 const settings = useSettingsStore();
-const { timerDuration, continueAfterTimerEnds, playerNames } = storeToRefs(settings);
+const { timerDuration, continueAfterTimeout, playerNames } = storeToRefs(settings);
 
 function addPlayer() {
   settings.addPlayer();
@@ -48,7 +48,7 @@ function removePlayer(index) {
           :max="3600"
         />
         <UiToggle
-          v-model="continueAfterTimerEnds"
+          v-model="continueAfterTimeout"
           label="Continue automatically after the timer reaches 0"
         />
 
