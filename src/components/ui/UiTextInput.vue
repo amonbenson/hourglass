@@ -1,5 +1,5 @@
 <script setup>
-import { defineModel, watch, ref } from "vue";
+import { ref } from "vue";
 
 const model = defineModel({ type: String, required: true });
 

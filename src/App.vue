@@ -3,6 +3,7 @@ import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { storeToRefs } from "pinia";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
+import useSound from "vue-use-sound";
 import {
   PlayIcon,
   PauseIcon,
@@ -58,11 +59,6 @@ const counterString = computed(() => {
   }
 });
 
-// assuming that 4 is the widest character
-const spacerString = computed(() => {
-  return counterString.value[0] + counterString.value.slice(1).replace(/\d/g, "4");
-});
-
 const currentPlayerColor = computed(() => {
   return [
     colors.primary,
@@ -71,6 +67,8 @@ const currentPlayerColor = computed(() => {
   ][currentPlayerIndex.value % 3];
 });
 
+const [playAlarm] = useSound(import("@/assets/sounds/alarm01.mp3"), { volume: 0.5 });
+
 let interval = null;
 
 function tick() {
@@ -78,6 +76,9 @@ function tick() {
     // decrement the counter
     counter.value--;
   } else {
+    // play the alarm sound
+    playAlarm();
+
     // start the next round
     next();
   }

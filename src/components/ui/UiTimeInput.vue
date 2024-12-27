@@ -1,5 +1,5 @@
 <script setup>
-import { defineModel, computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import UiTextInput from "./UiTextInput.vue";
 
 const model = defineModel({ type: Number, required: true });
