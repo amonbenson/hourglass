@@ -33,8 +33,17 @@ function updateDigits() {
 }
 
 function parseDigit(value, max = 9) {
-  const sanitizedDigit = String(value).replace(/\D/g, "")[0];
-  const number = parseInt(sanitizedDigit, 10);
+  // convert to string first
+  value = String(value);
+
+  // use only the last digit
+  if (typeof value === "string") {
+    value = value.at(-1);
+  }
+
+  // convert back to a number
+  const number = Number(value);
+
   if (isNaN(number)) {
     return 0;
   } else {
@@ -50,10 +59,12 @@ function updateModel() {
   const so = parseDigit(secondOnes.value);
 
   // write back the sanitized values
-  minuteTens.value = String(Math.min(mt, 5));
-  minuteOnes.value = String(Math.min(mo, 9));
-  secondTens.value = String(Math.min(st, 5));
-  secondOnes.value = String(Math.min(so, 9));
+  setTimeout(() => {
+    minuteTens.value = String(mt);
+    minuteOnes.value = String(mo);
+    secondTens.value = String(st);
+    secondOnes.value = String(so);
+  }, 0);
 
   // calculate the new model value
   const minutes = mt * 10 + mo;

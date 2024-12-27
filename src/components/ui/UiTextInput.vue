@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 
-const model = defineModel({ type: String, required: true });
+const model = defineModel({ type: [String, Number], required: true });
 
 const props = defineProps({
   label: { type: String, default: "" },
@@ -34,8 +34,9 @@ defineExpose({ focus, select });
     <input
       ref="input"
       v-model="model"
-      class="rounded bg-darker text-light focusring"
+      class="rounded bg-darker text-light focusring no-spinner"
       :class="singleDigit ? 'text-center text-xl w-8 p-2' : 'px-4 py-2'"
+      :type="singleDigit ? 'number' : 'text'"
       @focus="onFocus"
     >
   </div>

@@ -52,4 +52,8 @@
   .peer-focusring {
     @apply peer-focus:outline-none peer-focus-visible:ring-primary peer-focus-visible:ring-4;
   }
+
+  .no-spinner {
+    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+  }
 }
