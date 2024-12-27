@@ -37,7 +37,7 @@ function removePlayer(index) {
     class="fixed left-0 top-0 w-screen h-screen bg-dark/75 cursor-pointer overflow-y-scroll"
     @click.stop="open = false"
   >
-    <div class="container mx-auto sm:p-8">
+    <div class="container mx-auto sm:p-8 max-w-[48rem]">
       <div
         class="flex flex-col space-y-4 justify-center items-stretch p-8 bg-dark min-h-screen sm:min-h-0 sm:rounded-lg sm:shadow-xl sm:shadow-dark/25 cursor-default"
         @click.stop="() => {}"
