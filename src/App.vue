@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
 import useSound from "vue-use-sound";
+import alarmSound from "@/assets/sounds/alarm01.mp3";
 import {
   PlayIcon,
   PauseIcon,
@@ -67,7 +68,7 @@ const currentPlayerColor = computed(() => {
   ][currentPlayerIndex.value % 3];
 });
 
-const [playAlarm] = useSound(import("@/assets/sounds/alarm01.mp3"), { volume: 0.5 });
+const [playAlarm] = useSound(alarmSound, { volume: 0.5 });
 
 let interval = null;
 
@@ -75,10 +76,12 @@ function tick() {
   if (counter.value > 0) {
     // decrement the counter
     counter.value--;
-  } else {
-    // play the alarm sound
-    playAlarm();
 
+    // play alarm sound when the timer reaches 0
+    if (counter.value === 0) {
+      playAlarm();
+    }
+  } else {
     // start the next round
     next();
   }
