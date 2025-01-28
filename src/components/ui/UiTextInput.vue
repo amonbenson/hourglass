@@ -34,7 +34,7 @@ defineExpose({ focus, select });
     <input
       ref="input"
       v-model="model"
-      class="rounded bg-darker text-light focusring no-spinner"
+      class="rounded-sm bg-darker text-light focusring no-spinner"
       :class="singleDigit ? 'text-center text-xl w-8 p-2' : 'px-4 py-2'"
       :type="singleDigit ? 'number' : 'text'"
       @focus="onFocus"

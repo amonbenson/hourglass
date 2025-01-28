@@ -1,20 +1,58 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap') layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-dark: rgb(17 24 39);
+  --color-darker: rgb(3 7 18);
+  --color-light: rgb(249 250 251);
+  --color-muted: rgb(156 163 175);
+
+  --color-primary: rgb(20 184 166);
+  --color-secondary: rgb(254 158 11);
+  --color-accent: rgb(244 63 94);
+
+  --opacity-muted: 50%;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility focusring {
+  @apply focus:outline-hidden focus-visible:ring-primary focus-visible:ring-4;
+}
+
+@utility peer-focusring {
+  @apply peer-focus:outline-hidden peer-focus-visible:ring-primary peer-focus-visible:ring-4;
+}
+
+@utility no-spinner {
+  @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+}
 
 @layer base {
-  :root {
-    --color-dark: 17 24 39;
-    --color-darker: 3 7 18;
-    --color-light: 249 250 251;
-    --color-muted: 156 163 175;
-
-    --color-primary: 20 184 166;
-    --color-secondary: 254 158 11;
-    --color-accent: 244 63 94;
-  }
 
   html,
   body,
@@ -42,19 +80,5 @@
 
   h4 {
     @apply text-base font-bold;
-  }
-}
-
-@layer utilities {
-  .focusring {
-    @apply focus:outline-none focus-visible:ring-primary focus-visible:ring-4;
-  }
-
-  .peer-focusring {
-    @apply peer-focus:outline-none peer-focus-visible:ring-primary peer-focus-visible:ring-4;
-  }
-
-  .no-spinner {
-    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
   }
 }

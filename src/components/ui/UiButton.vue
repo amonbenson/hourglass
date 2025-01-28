@@ -19,8 +19,8 @@ const fgColor = computed(() => props.color === "light" ? "darker" : "light");
     :class="[
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       plain
-        ? 'bg-transparent text-[rgb(var(--color))] hover:enabled:bg-[rgb(var(--color))]/20'
-        : 'bg-[rgb(var(--color))]/75 text-[rgb(var(--fg-color))] hover:enabled:bg-[rgb(var(--color))]/50 shadow-md',
+        ? 'bg-transparent text-(color:--color) hover:enabled:bg-(color:--color)/20'
+        : 'bg-(color:--color)/75 text-(color:--fg-color) hover:enabled:bg-(color:--color)/50 shadow-md',
       pill ? 'rounded-full' : 'rounded-xl px-4 py-2',
     ]"
     :style="`--color: var(--color-${color}); --fg-color: var(--color-${fgColor})`"
