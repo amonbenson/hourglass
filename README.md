@@ -1,5 +1,17 @@
-# Vue 3 + Vite
+# Board Game Timer / Hourglass App
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Check it out on: https://amonbenson.github.io/hourglass/
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Features
+- Fully configurable timer duration
+- Support for multiple players
+- Settings are persisted using browser local storage
+
+## Utilised Technologies
+- Vue 3
+- Vite
+- Tailwind CSS (theming using CSS variables)
+- Pinia with useStorage to persist settings
+- Github Actions to automatically deploy to Github Pages
+
+You may (and I in fact do) use this app as a basic template/boilerplate/example.
