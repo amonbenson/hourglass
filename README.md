@@ -1,5 +1,8 @@
 # Board Game Timer / Hourglass App
 
+[![Lint](https://github.com/amonbenson/hourglass/actions/workflows/lint.yml/badge.svg)](https://github.com/amonbenson/hourglass/actions/workflows/lint.yml)
+[![Deploy](https://github.com/amonbenson/hourglass/actions/workflows/deploy.yml/badge.svg)](https://github.com/amonbenson/hourglass/actions/workflows/deploy.yml)
+
 Check it out on: https://amonbenson.github.io/hourglass/
 
 ## Features
