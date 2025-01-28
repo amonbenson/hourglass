@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/store/settings";
 import Timer from "@/timer";
-import useSound from "vue-use-sound";
+import { useSound } from "@vueuse/sound";
 import { Cog6ToothIcon, XMarkIcon, ArrowDownIcon } from "@heroicons/vue/24/outline";
 import UiCircleButton from "@/components/ui/UiCircleButton.vue";
 import ProgressBackdrop from "@/components/ProgressBackdrop.vue";
@@ -27,7 +27,7 @@ const settingsOpen = ref(false);
 watch(settingsOpen, () => timer.stop());
 
 // play alarm sound on timeout
-const [playAlarm] = useSound(alarmSound);
+const { play: playAlarm } = useSound(alarmSound);
 timer.on("timeout", () => {
   playAlarm();
 });
